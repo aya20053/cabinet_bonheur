@@ -90,6 +90,41 @@
             color: #ffff;
             font-size: 12px;
         }
+        /* Positionnement et style du badge de notification */
+.notif-badge {
+    position: absolute; /* Position absolue pour le placer au bon endroit */
+    top: -5px; /* Légèrement au-dessus de l’icône */
+    right: -10px; /* Décalage à droite */
+    background: white; /* Couleur rouge pour attirer l'attention */
+    color: black; /* Texte en blanc */
+    font-size: 12px; /* Taille du texte */
+    font-weight: bold; /* Texte en gras */
+    border-radius: 50%; /* Rond parfait */
+    padding: 5px; /* Espacement interne */
+    min-width: 20px; /* Largeur minimale */
+    height: 20px; /* Hauteur fixe pour garder une forme circulaire */
+    display: flex; /* Permet de centrer le texte */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Effet d’ombre pour donner du relief */
+}
+
+/* Positionner le badge sur le lien */
+.menu-item {
+    position: relative; /* Nécessaire pour que le badge se positionne par rapport au lien */
+}
+
+/* Effet d’animation quand un nouveau badge apparaît */
+@keyframes notifBounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+.notif-badge.animated {
+    animation: notifBounce 0.5s ease-in-out;
+}
+
     </style>
 </head>
 <body>
@@ -110,10 +145,13 @@
             </a>
         </div>
         <div class="menu-item">
-            <a href="demandes_validation.php">
-                <i class="fas fa-user-check"></i> Demandes de Validation
-            </a>
-        </div>
+    <a href="demandes_validation.php">
+        <i class="fas fa-user-check"></i> Demandes de Validation 
+        <span id="notif-badge" class="notif-badge" style="display: none;">0</span>
+    </a>
+</div>
+
+
         <div class="menu-item">
             <a href="gestion_medecins.php">
                 <i class="fas fa-user-md"></i> Gestion des Médecins
@@ -157,5 +195,27 @@
             openMenuBtn.classList.toggle('menu-open');
         }
     </script>
+
+<script>
+    function checkNotifications() {
+        fetch('get_notifications.php') // Appel AJAX au script PHP
+        .then(response => response.json()) // Convertit la réponse en JSON
+        .then(data => {
+            const notifBadge = document.getElementById('notif-badge'); // Sélectionne le badge
+            if (data.count > 0) { 
+                notifBadge.textContent = data.count; // Affiche le nombre de comptes à valider
+                notifBadge.style.display = 'inline-block'; // Affiche le badge
+            } else {
+                notifBadge.style.display = 'none'; // Cache le badge s'il n'y a rien
+            }
+        })
+        .catch(error => console.error('Erreur de récupération des notifications:', error));
+    }
+
+    // Vérifier les notifications toutes les 5 secondes
+    setInterval(checkNotifications, 5000);
+    checkNotifications(); // Vérifier immédiatement au chargement
+</script>
+
 </body>
 </html>

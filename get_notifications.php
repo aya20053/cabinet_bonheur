@@ -1,9 +1,9 @@
 <?php
 // Connexion à la base de données
-$pdo = new PDO("mysql:host=localhost;dbname=ton_db", "utilisateur", "motdepasse");
+$pdo = new PDO("mysql:host=localhost;dbname=clinique_bonheur", "root", "");
 
-// Récupérer le nombre de demandes en attente
-$query = $pdo->query("SELECT COUNT(*) as total FROM demandes WHERE statut = 'en_attente'");
+// Récupérer le nombre de comptes en attente de validation
+$query = $pdo->query("SELECT COUNT(*) as total FROM femmes_enceintes WHERE est_valide = 0");
 $result = $query->fetch(PDO::FETCH_ASSOC);
 
 // Retourner le nombre en JSON

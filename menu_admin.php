@@ -1,3 +1,9 @@
+<?php
+$reqNotif = $pdo->query("SELECT COUNT(*) AS total FROM messages WHERE statut = 'non lu'");
+$notif = $reqNotif->fetch();
+$totalMessagesNonLus = $notif['total'];
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -124,6 +130,17 @@
 .notif-badge.animated {
     animation: notifBounce 0.5s ease-in-out;
 }
+.badge {
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    padding: 5px 8px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
 
     </style>
 </head>
@@ -162,11 +179,13 @@
                 <i class="fas fa-calendar-alt"></i> Rendez-vous
             </a>
         </div>
-        <div class="menu-item">
-            <a href="messagerie_admin.php">
-                <i class="fas fa-envelope"></i> Messages
-            </a>
-        </div>
+        <a href="messagerie.php">
+    <i class="fas fa-envelope"></i>
+    <?php if ($totalMessagesNonLus > 0): ?>
+        <span class="badge"><?= $totalMessagesNonLus ?></span>
+    <?php endif; ?>
+</a>
+
         <div class="menu-item">
             <a href="notes_medicales.php">
                 <i class="fas fa-file-medical"></i> Notes Médicales

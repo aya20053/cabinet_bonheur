@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'medecin_id' => $_SESSION['user_id'] // Assuming the logged-in user's ID is the doctor
     ]);
 
-    header("Location: messagerie.php"); // Redirect back to the messages page
+    header("Location: messagerie_admin.php"); // Redirect back to the messages page
     exit();
 }
 ?>

@@ -50,6 +50,19 @@ if (isset($_GET['search'])) {
     $stmt->execute(['search' => "%$search%"]);
     $messages = $stmt->fetchAll();
 }
+
+// Vérifier si un formulaire de marquage a été soumis
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['marquer_lu'])) {
+    // Mettre à jour le statut du message à "lu"
+    $message_id = $_POST['message_id'];
+    $update_query = "UPDATE messages SET statut = 'lu' WHERE id = :message_id";
+    $stmt = $pdo->prepare($update_query);
+    $stmt->execute(['message_id' => $message_id]);
+
+    // Rediriger pour afficher la mise à jour
+    header("Location: messagerie_admin.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -78,32 +91,31 @@ if (isset($_GET['search'])) {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
-       .search-bar {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    padding: 10px 15px;
-    background: #fff;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto; /* Centrer la barre de recherche */
-}
-
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            padding: 10px 15px;
+            background: #fff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            margin-left: auto;
+            margin-right: auto; /* Centrer la barre de recherche */
+        }
         .search-bar i {
             font-size: 18px;
             color: #872341;
             padding: 8px;
         }
         .search-bar input {
-         
             padding: 10px;
             font-size: 16px;
             border: none;
             outline: none;
             background: transparent;
+            width: 100%; /* Prendre tout l'espace disponible */
         }
         table {
             width: 100%;
@@ -183,33 +195,17 @@ if (isset($_GET['search'])) {
                         <td>
                             <a href="#" class="btn" onclick="showReplyForm(<?= $msg['id'] ?>, '<?= htmlspecialchars($msg['femme_id']) ?>')">Répondre</a>
                             <div id="reply-form-<?= $msg['id'] ?>"></div>
+                            <?php if ($msg['statut'] === 'non lu'): ?>
+                                <form method="post" style="display:inline;">
+                                    <input type="hidden" name="message_id" value="<?= $msg['id'] ?>">
+                                    <button type="submit" name="marquer_lu" class="btn">Marquer comme lu</button>
+                                </form>
+                            <?php else: ?>
+                                <span class="badge-lu">✔️ Lu</span>
+                            <?php endif; ?>
                         </td>
                     </tr>
-                    <?php if (!empty($msg['repondre'])): ?>
-                        <tr>
-                            <td colspan="7">
-                                <div class="reply">
-                                    <strong>Réponse :</strong><br>
-                                    "<?php echo htmlspecialchars($msg['repondre']); ?>"
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
                 <?php endforeach; ?>
-
-                <td>
-    <a href="#" class="btn" onclick="showReplyForm(<?= $msg['id'] ?>, '<?= htmlspecialchars($msg['femme_id']) ?>')">Répondre</a>
-    
-    <?php if ($msg['statut'] == 'non lu'): ?>
-        <form method="post" style="display:inline;">
-            <input type="hidden" name="message_id" value="<?= $msg['id'] ?>">
-            <button type="submit" name="marquer_lu" class="btn-lu">Marquer comme lu</button>
-        </form>
-    <?php else: ?>
-        <span class="badge-lu">✔️ Lu</span>
-    <?php endif; ?>
-</td>
-
             </tbody>
         </table>
     </div>
@@ -231,5 +227,21 @@ if (isset($_GET['search'])) {
             document.getElementById(`reply-form-${messageId}`).innerHTML = replyForm;
         }
     </script>
+
+    <script>
+        function checkNotifications() {
+            fetch("update_message_status.php")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.new_messages > 0) {
+                        document.getElementById("notification").style.display = "block";
+                    }
+                })
+                .catch(error => console.error("Erreur:", error));
+        }
+
+        setInterval(checkNotifications, 5000); // Vérifie toutes les 5 secondes
+    </script>
+
 </body>
 </html>

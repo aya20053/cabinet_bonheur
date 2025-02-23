@@ -161,6 +161,20 @@ $totalMessagesNonLus = $notif['total'];
             top: 0;
             right: 0;
         }
+        .notification-badge {
+        background-color:WHITE;
+        color: BLACK;
+        font-size: 14px;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 50%;
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        display: inline-block;
+        min-width: 20px;
+        text-align: center;
+    }
     </style>
 </head>
 <body>
@@ -195,10 +209,23 @@ $totalMessagesNonLus = $notif['total'];
                 </a>
             </div>
             <div class="menu-item">
-                <a href="messagerie_admin.php">
-                    <i class="fas fa-envelope"></i> Messages
-                </a>
-            </div>
+    <a href="messagerie_admin.php">
+        <i class="fas fa-envelope"></i> Messages
+        <?php
+        // Vérifier s'il y a des messages non lus
+        $query = "SELECT COUNT(*) AS new_messages FROM messages WHERE statut = 'non lu'";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch();
+        $new_messages = $result['new_messages'];
+        
+        if ($new_messages > 0) {
+            echo "<span class='notification-badge'>$new_messages</span>";
+        }
+        ?>
+    </a>
+</div>
+
             <div class="menu-item">
                 <a href="notes_medicales.php">
                     <i class="fas fa-file-medical"></i> Notes Médicales

@@ -1,45 +1,45 @@
-<?php
-session_start();
-ob_start();
-
-include 'menu_admin.php';
-
-// Vérifier si l'utilisateur est connecté et est un administrateur
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login_admin.php");
-    exit();
-}
+<?php 
+session_start(); 
+ob_start();  
 
 // Connexion à la base de données
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "clinique_bonheur";
+$host = "localhost"; 
+$user = "root"; 
+$pass = ""; 
+$dbname = "clinique_bonheur"; 
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
-} catch (PDOException $e) {
-    die("Erreur de connexion : " . $e->getMessage());
+try { 
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass, [ 
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, 
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC 
+    ]); 
+} catch (PDOException $e) { 
+    die("Erreur de connexion : " . $e->getMessage()); 
+}  
+
+include 'menu_admin.php'; 
+
+// Vérifier si l'utilisateur est connecté et est un administrateur
+if (!isset($_SESSION['user_id'])) {     
+    header("Location: login_admin.php");     
+    exit(); 
 }
 
 // Gestion de la recherche
-$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$search = isset($_GET['search']) ? trim($_GET['search']) : ''; 
 
 // Construction de la requête SQL
-$query = "SELECT * FROM femmes_enceintes WHERE isadmin = 0";
-$params = [];
+$query = "SELECT * FROM femmes_enceintes WHERE isadmin = 0"; 
+$params = []; 
 
-if (!empty($search)) {
-    $query .= " AND (nom LIKE :search OR prenom LIKE :search OR email LIKE :search OR telephone LIKE :search)";
-    $params[':search'] = "%$search%";
-}
+if (!empty($search)) {     
+    $query .= " AND (nom LIKE :search OR prenom LIKE :search OR email LIKE :search OR telephone LIKE :search)";     
+    $params[':search'] = "%$search%"; 
+} 
 
-$stmt = $pdo->prepare($query);
-$stmt->execute($params);
-$patients = $stmt->fetchAll();
+$stmt = $pdo->prepare($query); 
+$stmt->execute($params); 
+$patients = $stmt->fetchAll(); 
 ?>
 
 <!DOCTYPE html>

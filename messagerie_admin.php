@@ -196,6 +196,20 @@ if (isset($_GET['search'])) {
                         </tr>
                     <?php endif; ?>
                 <?php endforeach; ?>
+
+                <td>
+    <a href="#" class="btn" onclick="showReplyForm(<?= $msg['id'] ?>, '<?= htmlspecialchars($msg['femme_id']) ?>')">Répondre</a>
+    
+    <?php if ($msg['statut'] == 'non lu'): ?>
+        <form method="post" style="display:inline;">
+            <input type="hidden" name="message_id" value="<?= $msg['id'] ?>">
+            <button type="submit" name="marquer_lu" class="btn-lu">Marquer comme lu</button>
+        </form>
+    <?php else: ?>
+        <span class="badge-lu">✔️ Lu</span>
+    <?php endif; ?>
+</td>
+
             </tbody>
         </table>
     </div>

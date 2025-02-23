@@ -179,12 +179,11 @@ $totalMessagesNonLus = $notif['total'];
                 <i class="fas fa-calendar-alt"></i> Rendez-vous
             </a>
         </div>
-        <a href="messagerie.php">
-    <i class="fas fa-envelope"></i>
-    <?php if ($totalMessagesNonLus > 0): ?>
-        <span class="badge"><?= $totalMessagesNonLus ?></span>
-    <?php endif; ?>
-</a>
+        <div class="menu-item">
+            <a href="messagerie_admin.php">
+                <i class="fas fa-envelope"></i> Messages
+            </a>
+        </div>
 
         <div class="menu-item">
             <a href="notes_medicales.php">

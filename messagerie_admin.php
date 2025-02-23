@@ -151,10 +151,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['marquer_lu'])) {
             transition: background-color 0.3s ease;
             text-align: center;
             text-decoration: none;
+            Margin: 25px;
+            background: #F4CCE9;
+
         }
         .btn:hover {
             background-color: #3B1C32;
-            color: #A64D79;
+            color: white;
         }
     </style>
 </head>
